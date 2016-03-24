@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Проба</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container" >
+
+<div class="blockafk" id="blockafk" >
+  <hr>
+
+<br>
+  <div class="row">
+    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+      <p>
+        Порядок автокорреляционной функции (U) от 1 до N
+      </p>
+      <input type="text" id="afk1" name="afk"  value="" placeholder="введите N">
+      <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+      </div>
+
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+      <h3>Значения АФК</h3>
+      <textarea id='afkvalue' id="text" name="name" rows="20" cols="30"></textarea>
+     </div>
+     <input id="end" type="button" name="name" value="Запустить генератор АФК" >
+   </div>
+   <hr>
+   <div class="row">
+     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+
+     </div>
+   </div>
+</div>
+<script>
+  
+$("#end").click(function () {
+    var myList=[];
+     for (var i = 0; i < 500; i++) {
+         myList[i]=i;
+
+  }
+  N = 20;
+             var sr1 = []; var sr2 = []; var sr3 = []; var afkl=[], mxX=[],mxY=[],DxX=[],DxY=[],mxS=[] ;
+                 var summ3 = []; var summ4 = []; var summ5 = []; var summ6 = [];
+          for (var j = 0; j < N; j++) {
+              sr1[j]=[]; sr2[j]=[]; summ3[j] = 0; summ4[j]=0; summ6[j]=0; summ5[j]=0; sr3[j]=0;
+               for (var i = 0; i < myList.length-j; i++) {
+                 myList[i]=myList[i];
+                 sr1[j][i]=myList[i]; //Верно
+                 summ3[j] = summ3[j]+ parseFloat(myList[i]);
+                 summ4[j] = summ4[j]+ parseFloat(Math.pow(myList[i],2));
+               }
+               for (var i = j; i < myList.length; i++) {
+                 myList[i]=myList[i];
+                 summ6[j] = summ6[j]+ parseFloat(myList[i]);
+                 summ5[j] = summ5[j]+ parseFloat(Math.pow(myList[i],2));
+                 sr2[j][i-j]=myList[i];
+               }
+               for (var i = 0; i < myList.length-j; i++) {
+                 sr3[j] += parseFloat(sr1[j][i]*sr2[j][i]);
+               }
+
+               mxX[j] = (summ3[j]/(myList.length-j));
+               mxY[j] = (summ6[j]/(myList.length-j));
+               DxX[j] = (summ4[j]/(myList.length-j)-Math.pow(mxX[j], 2));
+               DxY[j] = (summ5[j]/(myList.length-j)-Math.pow(mxY[j], 2));
+               mxS[j] = (sr3[j]/(myList.length-j)); //произведение ср х*y
+               afkl[j] = (mxS[j] - mxY[j]*mxX[j])/(Math.sqrt(DxX[j])*Math.sqrt(DxY[j]))+'\n';
+            }
+               document.getElementById('afkvalue').innerHTML = afkl.join('');
+               $('#container').highcharts({
+                                title: {
+                                    text: 'График автокорреляционной функции',
+                                    x: -20 //center
+                                },
+                                xAxis: {
+
+                                    categories: [1,2,3,4,5]
+                                },
+                                yAxis: {
+
+                                    title: {
+                                        text: 'Коэффициенты'
+                                    },
+
+                                    plotLines: [{
+                                        value: 0,
+                                        width: 1,
+                                        color: '#808080'
+                                    }]
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    align: 'right',
+                                    verticalAlign: 'middle',
+                                    borderWidth: 0
+                                },
+                                series: [{
+
+                                    name: 'Коэффициент',
+                                    data: afkl
+                                }]
+                            });
+                        });
+
+
+
+ </script>
+
+</div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.js"></script>
+
+</body>
+</html>

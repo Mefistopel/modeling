@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Моделирование объекта</title>
+    <script type="text/javascript" src="js/model.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container" >
+      <h1>Программа для моделирования</h1>
+      <!-- Картинка и варианты -->
+      <div class="row">
+        <div class="container">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <img src="img/obj1.png" alt="Объект" />
+        </div></div>
+        <div class="row">
+             <h2>Выберите вариант моделирования</h2>
+              <input type="button" value="Запустить моделирование инерционного звена первого порядка" onclick="show('block1')">
+              <input type="button" value="Запустить моделирование обратного инерционного звена первого порядка" onclick="show('block2')">
+          </div>
+      </div>
+      <!-- Начинается первое звено  -->
+    <div class="block1" id="block1" style="display: none">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <h2>Ввод параметров:</h2>
+            <input type="text" id="сoeff" name="сoeff" value="" placeholder="коэффициент усиления">
+            <input type="text" id="constT" name="constT" value="" placeholder="постоянная времени">
+            <input type="text" id="lag" name="lag" value="" placeholder="запаздывание">
+            <input type="text" id="step" name="step" value="" placeholder="шаг дискретизации">
+            <br>
+            <input type="button" id="btn" name="name" value="Ввести параметры в систему" onClick='someFunc1()'>
+        </div>
+      </div>
+  <br>
+      <div class="row">
+        <h2>Инерционное звено первого порядка</h2>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+          <h3>U воздействие</h3>
+          <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <textarea id='text' id="text" name="name" rows="20" cols="25"></textarea>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+            <p>Математическое ожидание (M) = <span id="mat_expectedU"></span>;<br>   Дисперсия (G<sup>2</sup>) = <span id="dispersionU"></span>;<br></p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+          <h3>Y воздействие</h3>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <textarea id="content" name="name" rows="20" cols="25"></textarea>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+            <p>Математическое ожидание (M) = <span id="mat_expectedY"></span>;<br>   Дисперсия (G<sup>2</sup>) = <span id="dispersionY"></span>;<br></p>
+          </div>
+        </div></div>
+        <div class="row">
+        <p>Автокорреляционной функция = <input id="afk" type="button"  value="Генерировать АФК" onclick="show('blockafk')"><br>
+        Помеховая составляющая = <input id="afk" type="button"  value="Вычислить помеху" onclick="show('interference')"><br></p>
+        <input id="end" type="button" name="name" value="Произвести моделирование" onclick="getText1()">
+        </div>
+        <!-- Начинается генерирование АФК -->
+      <div class="blockafk" id="blockafk" style="display: none">
+        <hr>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <p>
+                Порядок автокорреляционной функции (U) от 1 до N
+              </p>
+              <input type="text" id="N" name="N"  value="" placeholder="введите N">
+          </div>
+        </div>
+    <br>
+        <div class="row">
+           <h3>U воздействия</h3>
+          <div id="scheduleU" class="col-lg-9 col-md-9 col-sm-9 col-xs-9"></div>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <h4>Значения АФК</h4>
+            <textarea id='afkvalueU' id="text" name="name" rows="20" cols="30"></textarea>
+           </div>
+         </div>
+         <hr>
+         <div class="row">
+           <h3>Y воздействия</h3>
+           <div id="scheduleY" class="col-lg-9 col-md-9 col-sm-9 col-xs-9"></div>
+           <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+             <h4>Значения АФК</h4>
+             <textarea id='afkvalueY' id="text" name="name" rows="20" cols="30"></textarea>
+            </div>
+          </div>
+          <input id="schedule_end" type="button" name="name" value="Запустить генератор АФК">
+         <hr>
+      </div>
+      <!-- Поиск помехи  -->
+      <div class="interference" id="interference" style="display: none">
+        <hr>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <p>
+                Введите alpha [0, 1]:
+              </p>
+              <input type="text" id="alpha" name="alpha"  value="" placeholder="введите alpha">
+          </div>
+        </div>
+    <br>
+        <div class="row">
+           <h3>Помеховая составляющая воздействия Y</h3>
+          <div id="interference_schedule" class="col-lg-9 col-md-9 col-sm-9 col-xs-9"></div>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <h4>Значения помехи</h4>
+            <textarea id='interference_value' name="interference_value" rows="20" cols="30"></textarea>
+           </div>
+           <div id="antiinterference_schedule" class="col-lg-9 col-md-9 col-sm-9 col-xs-9"></div>
+           <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+             <h4>Значения полезной составляющей сигнала</h4>
+             <textarea id='antiinterference_value' name="interference_value" rows="20" cols="30"></textarea>
+            </div>
+         </div>
+          <input id="interference_end" type="button" name="interference_end" value="Вычислить помеху">
+         <hr>
+      </div>
+    </div>
+      <!-- Начинается обртаное звено  -->
+    <div class="block2" id="block2" style="display: none">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <h2>Ввод параметров:</h2>
+            <input type="text" id="сoeff" name="сoeff" value="" placeholder="коэффициент усиления">
+            <input type="text" id="constT" name="constT" value="" placeholder="постоянная времени">
+            <input type="text" id="lag" name="lag" value="" placeholder="запаздывание">
+            <input type="text" id="step" name="step" value="" placeholder="шаг дискретизации">
+            <br>
+            <input type="button" id="btn" name="name" value="Ввести параметры в систему" onClick='someFunc2()'>
+        </div>
+      </div>
+  <br>
+      <div class="row">
+        <h2>Обратное инерционное звено первого порядка</h2>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+          <h3>U воздействие</h3>
+          <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <textarea id='text2' id="text2" name="name" rows="20" cols="25"></textarea>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+          <p>Математическое ожидание (M)= <span id="mat_expected2U"></span>;<br>   Дисперсия (G<sup>2</sup>) = <span id="dispersion2U">;</span><br></p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+          <h3>Y воздействие</h3>
+          <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <textarea id="content2" name="name" rows="20" cols="25"></textarea>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+            <p>Математическое ожидание (M) = <span id="mat_expected2Y"></span>;<br>   Дисперсия (G<sup>2</sup>) = <span id="dispersion2Y"></span>;<br></p>
+          </div>
+        </div>
+        <p>Коэффициент автокорреляционной функции = <span id="afk2">;</span><br></p>
+        <input id="end2" type="button" name="name" value="Произвести моделирование" onclick="getText2()">
+      </div>
+    </div>
+  </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.js"></script>
+    <script type="text/javascript">
+    $("#schedule_end").click(function () { //Функция нахождения АКФ графика U
+          var text = document.getElementById('text');
+          var myList = text.value.replace(',','.').split('\n');
+          N = document.getElementById('N').value;
+         var sr1 = []; var sr2 = []; var sr3 = []; var afk=[], mxX=[],mxY=[],DxX=[],DxY=[],mxS=[] ; //Ну, так надо.
+         var summ3 = []; var summ4 = []; var summ5 = []; var summ6 = []; var counter=[];
+         for (var j = 0; j < N; j++) {
+           counter[j]=j; //Счетчик
+             sr1[j]=[]; sr2[j]=[]; summ3[j] = 0; summ4[j]=0; summ6[j]=0; summ5[j]=0; sr3[j]=0;
+              for (var i = 0; i < myList.length-j; i++) {
+                myList[i]=myList[i].replace(',','.');
+                sr1[j][i]=myList[i]; //Верно
+                summ3[j] = summ3[j]+ parseFloat(myList[i]);
+                summ4[j] = summ4[j]+ parseFloat(Math.pow(myList[i],2));
+              }
+              for (var i = j; i < myList.length; i++) {
+                myList[i]=myList[i].replace(',','.');
+                summ6[j] = summ6[j]+ parseFloat(myList[i]);
+                summ5[j] = summ5[j]+ parseFloat(Math.pow(myList[i],2));
+                sr2[j][i-j]=myList[i];
+              }
+              for (var i = 0; i < myList.length-j; i++) {
+                sr3[j] += parseFloat(sr1[j][i]*sr2[j][i]);
+              }
+
+              mxX[j] = (summ3[j]/(myList.length-j));
+              mxY[j] = (summ6[j]/(myList.length-j));
+              DxX[j] = (summ4[j]/(myList.length-j)-Math.pow(mxX[j], 2));
+              DxY[j] = (summ5[j]/(myList.length-j)-Math.pow(mxY[j], 2));
+              mxS[j] = (sr3[j]/(myList.length-j)); //произведение ср х*y
+             afk[j] = (mxS[j] - mxY[j]*mxX[j])/(Math.sqrt(DxX[j])*Math.sqrt(DxY[j]));
+          }
+            document.getElementById('afkvalueU').innerHTML = afk.join('\n').replace( /\./g, "," );
+
+          $('#scheduleU').highcharts({ //Построение графика
+              title: {
+                  text: 'График автокорреляционной функции',
+                  x: -20 //center
+              },
+              xAxis: {
+
+                  categories: counter
+              },
+              yAxis: {
+
+                  title: {
+                      text: 'Коэффициенты'
+                  },
+
+                  plotLines: [{
+                      value: 0,
+                      width: 1,
+                      color: '#808080'
+                  }]
+              },
+              legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'middle',
+                  borderWidth: 0
+              },
+              series: [{
+
+                  name: 'Коэффициент',
+                  data: afk
+              }]
+          });
+      });
+      $("#schedule_end").click(function () { //Функция нахождения АКФ графика Y
+            var text = document.getElementById('content');
+            var myList = text.value.replace(',','.').split('\n');
+            N = document.getElementById('N').value;
+           var sr1 = []; var sr2 = []; var sr3 = []; var afk=[], mxX=[],mxY=[],DxX=[],DxY=[],mxS=[] ;
+           var summ3 = []; var summ4 = []; var summ5 = []; var summ6 = []; var counter=[];
+           for (var j = 0; j < N; j++) {
+             counter[j]=j;
+               sr1[j]=[]; sr2[j]=[]; summ3[j] = 0; summ4[j]=0; summ6[j]=0; summ5[j]=0; sr3[j]=0;
+                for (var i = 0; i < myList.length-j; i++) {
+                  myList[i]=myList[i].replace(',','.');
+                  sr1[j][i]=myList[i]; //Верно
+                  summ3[j] = summ3[j]+ parseFloat(myList[i]);
+                  summ4[j] = summ4[j]+ parseFloat(Math.pow(myList[i],2));
+                }
+                for (var i = j; i < myList.length; i++) {
+                  myList[i]=myList[i].replace(',','.');
+                  summ6[j] = summ6[j]+ parseFloat(myList[i]);
+                  summ5[j] = summ5[j]+ parseFloat(Math.pow(myList[i],2));
+                  sr2[j][i-j]=myList[i];
+                }
+                for (var i = 0; i < myList.length-j; i++) {
+                  sr3[j] += parseFloat(sr1[j][i]*sr2[j][i]);
+                }
+
+                mxX[j] = (summ3[j]/(myList.length-j));
+                mxY[j] = (summ6[j]/(myList.length-j));
+                DxX[j] = (summ4[j]/(myList.length-j)-Math.pow(mxX[j], 2));
+                DxY[j] = (summ5[j]/(myList.length-j)-Math.pow(mxY[j], 2));
+                mxS[j] = (sr3[j]/(myList.length-j)); //произведение ср х*y
+               afk[j] = (mxS[j] - mxY[j]*mxX[j])/(Math.sqrt(DxX[j])*Math.sqrt(DxY[j]));
+            }
+              document.getElementById('afkvalueY').innerHTML = afk.join('\n').replace( /\./g, "," );
+
+            $('#scheduleY').highcharts({
+                title: {
+                    text: 'График автокорреляционной функции',
+                    x: -20 //center
+                },
+                xAxis: {
+
+                    categories: counter
+                },
+                yAxis: {
+
+                    title: {
+                        text: 'Коэффициенты'
+                    },
+
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+
+                    name: 'Коэффициент',
+                    data: afk
+                }]
+            });
+        });
+        $("#interference_end").click(function () { //Функция поиска помехи
+              var text = document.getElementById('content');
+              var myList = text.value.replace(',','.').split('\n'); //Збс
+              var A = document.getElementById('alpha').value.replace(',','.'); //alpha
+             var S = []; //Полезный сигнал
+        	 var N = []; //Помеховая составляющая
+             for (var i = 0; i < myList.length; i++) {
+				 myList[i]=myList[i].replace(',','.')
+               if (i == 0) {
+                 S[i] = parseFloat(myList[i]);
+               }
+               else {
+                S[i]= parseFloat(A*myList[i]+(1-A)*S[i-1]);
+               }
+               N[i] = parseFloat(myList[i]-S[i]);
+              }
+                document.getElementById('interference_value').innerHTML = N.join('\n').replace( /\./g, "," );
+                document.getElementById('antiinterference_value').innerHTML = S.join('\n').replace( /\./g, "," );
+              $('#interference_schedule').highcharts({
+                  title: {
+                      text: 'График помеховой составляющей сигнала',
+                      x: -20 //center
+                  },
+                  xAxis: {
+
+                      categories: [1,2,3,4]
+                  },
+                  yAxis: {
+
+                      title: {
+                          text: 'Помеховые значения'
+                      },
+
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#808080'
+                      }]
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle',
+                      borderWidth: 0
+                  },
+                  series: [{
+
+                      name: 'Значение',
+                      data: N
+                  }]
+              });
+              $('#antiinterference_schedule').highcharts({
+                  title: {
+                      text: 'График полезной составляющей сигнала',
+                      x: -20 //center
+                  },
+                  xAxis: {
+
+                      categories: [1,2,3,4]
+                  },
+                  yAxis: {
+
+                      title: {
+                          text: 'Полезные значения'
+                      },
+
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#808080'
+                      }]
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle',
+                      borderWidth: 0
+                  },
+                  series: [{
+
+                      name: 'Значение',
+                      data: S
+                  }]
+              });
+          });
+    </script>
+  </body>
+</html>
